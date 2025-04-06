@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Zaawansowany Kalkulator</title>
+  <style>
+    body {
+      background: #222;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .calculator {
+      background: #333;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #000;
+      width: 320px;
+    }
+    .display {
+      background: #111;
+      padding: 1rem;
+      font-size: 2rem;
+      text-align: right;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      min-height: 2.5rem;
+      word-wrap: break-word;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+    button {
+      padding: 1rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      background: #444;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #666;
+    }
+    .equal {
+      background: #28a745;
+      grid-column: span 2;
+    }
+    .equal:hover {
+      background: #218838;
+    }
+    .clear {
+      background: #dc3545;
+    }
+    .clear:hover {
+      background: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button onclick="clearDisplay()" class="clear">C</button>
+      <button onclick="deleteLast()">←</button>
+      <button onclick="appendOperator('/')">÷</button>
+      <button onclick="appendOperator('*')">×</button>
+
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button onclick="appendOperator('-')">−</button>
+
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="appendOperator('+')">+</button>
+
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="calculate()" class="equal">=</button>
+
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="appendDecimal('.')">.</button>
+    </div>
+  </div>
+
+  <script>
+    let display = document.getElementById('display');
+    let current = '';
+    let decimalAdded = false;
+
+    function updateDisplay() {
+      display.textContent = current || '0';
+    }
+
+    function appendNumber(num) {
+      current += num;
+      updateDisplay();
+    }
+
+    function appendOperator(op) {
+      if (current === '' || /[+\-*/]$/.test(current)) return;
+      current += op;
+      decimalAdded = false;
+      updateDisplay();
+    }
+
+    function appendDecimal(dot) {
+      if (decimalAdded) return;
+      current += dot;
+      decimalAdded = true;
+      updateDisplay();
+    }
+
+    function clearDisplay() {
+      current = '';
+      decimalAdded = false;
+      updateDisplay();
+    }
+
+    function deleteLast() {
+      if (current.slice(-1) === '.') decimalAdded = false;
+      current = current.slice(0, -1);
+      updateDisplay();
+    }
+
+    function calculate() {
+      try {
+        const result = eval(current.replace(/[^-()\d/*+.]/g, ''));
+        current = result.toString();
+        decimalAdded = current.includes('.');
+        updateDisplay();
+      } catch (err) {
+        current = '';
+        display.textContent = 'Błąd';
+      }
+    }
+  </script>
+</body>
+</html>
